@@ -20,8 +20,46 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedMode = "work";
   int workTime = 1500; // 25 minutos en segundos
   int restTime = 300; // 5 minutos en segundos
-  int currentTime = 1500; // Tiempo actual en segundos
-  Timer? timer;
+  late int currentSeconds;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Al abrir la pantalla por primera vez, el tiempo actual será el de trabajo (1500s)
+    currentSeconds = workTime;
+  }
+
+  void _startTimer(){
+    setState(() {
+      isRunning = true;
+    });
+
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (currentSeconds > 0) {
+          currentSeconds--;
+        } else {
+          _pauseTimer();
+        }
+      });
+    });
+  }
+
+  void _pauseTimer() {
+    setState(() {
+      isRunning = false;
+    });
+    // Cancela el metrónomo para que deje de restar segundos
+    _timer?.cancel();
+  }
+
+  void _resetTimer(){
+    setState(() {
+      isRunning = false;
+      currentSeconds = selectedMode == "work" ? workTime : restTime;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
