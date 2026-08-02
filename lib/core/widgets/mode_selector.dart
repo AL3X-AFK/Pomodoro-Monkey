@@ -3,33 +3,35 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pomodoro_app/core/theme/app_colors.dart';
 import 'package:pomodoro_app/core/theme/text_styles.dart';
 
-class ModeSelector extends StatefulWidget {
-  const ModeSelector({super.key});
+class ModeSelector extends StatelessWidget {
 
-  @override
-  State<ModeSelector> createState() => _ModeSelectorState();
-}
+  final String selectedMode;
+  final Function(String) onModeSelected;
 
-class _ModeSelectorState extends State<ModeSelector> {
-
-  String? selectedMode = "work";
+  const ModeSelector({
+    super.key, 
+    required this.selectedMode, 
+    required this.onModeSelected
+  });
 
   @override
   Widget build(BuildContext context) {
+
+    final bool isWork = selectedMode == "work";
+    final bool isRest = selectedMode == "rest";
+
     return Row(
       children: [
         Expanded(
           child: GestureDetector(
             onTap: () {
-              setState(() {
-                selectedMode = "work";
-              });
+              onModeSelected("work");
             },
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 8, top: 16, bottom: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: selectedMode == "work" ? AppColors.primaryColor : Colors.white,
+                  color: isWork ? AppColors.primaryColor : Colors.white,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Padding(
@@ -53,15 +55,13 @@ class _ModeSelectorState extends State<ModeSelector> {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              setState(() {
-                selectedMode = "rest";
-              });
+              onModeSelected("rest");
             },
             child: Padding(
               padding: const EdgeInsets.only(left: 8, right: 16, top: 16, bottom: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: selectedMode == "rest" ? AppColors.primaryColor : Colors.white,
+                  color: isRest ? AppColors.primaryColor : Colors.white,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Padding(

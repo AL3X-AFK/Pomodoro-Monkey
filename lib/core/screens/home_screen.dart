@@ -57,7 +57,31 @@ class _HomeScreenState extends State<HomeScreen> {
   void _resetTimer(){
     setState(() {
       isRunning = false;
-      currentSeconds = selectedMode == "work" ? workTime : restTime;
+      currentSeconds = selectedMode == "work" ? 1500 : 300;
+    });
+  }
+
+  void _adjustTime(int secondsToAdd) {
+    if (isRunning) return; // No permitir ajustes mientras el temporizador está corriendo
+    setState(() {
+      int newSeconds = currentSeconds + secondsToAdd;
+      if (newSeconds >= 60 && newSeconds <= 3600){
+        currentSeconds = newSeconds;
+        if(selectedMode == "work"){
+          workTime = currentSeconds;
+        } else {
+          restTime = currentSeconds;
+        }
+      }
+    });
+  }
+
+  void _changeMode(String mode) {
+    if (selectedMode == mode) return; // No hacer nada si el modo seleccionado es el mismo
+    _pauseTimer(); // Pausar el temporizador si está corriendo
+    setState(() {
+      selectedMode = mode;
+      currentSeconds = mode == "work" ? workTime : restTime;
     });
   }
 
@@ -68,9 +92,23 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Text('Es momento de concentrarse!', style: TextStyles.general),
         PetDisplay(),
-        ModeSelector(),
-        TimerDisplay(),
-        ControlButtons(),
+        ModeSelector(
+          selectedMode: selectedMode,
+          onModeSelected: (mode) {
+            _changeMode(mode);
+          },
+        ),
+        TimerDisplay( 
+          seconds: currentSeconds,
+          isRunning: isRunning,
+          onIncrement: () => _adjustTime(300), // Incrementa
+          onDecrement: () => _adjustTime(-300), // Decrementa
+        ),
+        ControlButtons(
+          isRunning: isRunning,
+          onPlayPause: isRunning? _pauseTimer : _startTimer,
+          onReset: _resetTimer,
+        ),
         
       ],
     );

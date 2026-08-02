@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
-class ControlButtons extends StatefulWidget {
-  const ControlButtons({super.key});
-
-  @override
-  State<ControlButtons> createState() => _ControlButtonsState();
-}
-
-class _ControlButtonsState extends State<ControlButtons> {
+class ControlButtons extends StatelessWidget {
+  final bool isRunning;
+  final VoidCallback onPlayPause;
+  final VoidCallback onReset;
+  const ControlButtons({
+    super.key,
+    required this.isRunning,
+    required this.onPlayPause,
+    required this.onReset,
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -15,17 +17,15 @@ class _ControlButtonsState extends State<ControlButtons> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          onPressed: () {
-            // Acción al presionar el botón de play
-          },
+          onPressed: onPlayPause,
           iconSize: 48,
-          icon: Icon(Icons.play_arrow),
+          icon: Icon(isRunning? Icons.pause : Icons.play_arrow),
         ),
         
         SizedBox(width: 32), // Espacio entre los botones
         IconButton(
           onPressed: () {
-            // Acción al presionar el botón de refrest
+            onReset();
           },
           iconSize: 36,
           icon: Icon(Icons.refresh),
